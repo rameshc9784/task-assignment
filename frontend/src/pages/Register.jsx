@@ -1,38 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); // Reset any previous errors
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, { name, email, password });
-      setSuccess(true); // If registration is successful
-      console.log('User registered:', response.data);
-      setName("")
-      setEmail("")
-      setPassword("")
-      navigate("/login")
+      toast.success("Registration successful! Redirecting to login...");
+      setName("");
+      setEmail("");
+      setPassword("");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(err.response ? err.response.data.message : 'Server error');
-      console.error('Registration error:', err);
+      toast.error(err.response ? err.response.data.message : "Server error");
+      console.error("Registration error:", err);
     } finally {
       setLoading(false);
     }
-
   };
 
   return (
@@ -49,7 +44,6 @@ const Register = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
             />
           </div>
           <div>
@@ -60,7 +54,7 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+
             />
           </div>
           <div>
@@ -71,22 +65,21 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+
             />
           </div>
           <button
             type="submit"
             className="w-full py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
+            disabled={loading}
           >
-            Sign up
+            {loading ? "Signing up..." : "Sign up"}
           </button>
-
-          <p>Already have an acoount? <Link to="/login" className="text-blue-600 hover:underline">Login</Link> </p>
+          <p>Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link></p>
         </form>
       </div>
     </div>
   );
 }
 
-
-export default Register
+export default Register;

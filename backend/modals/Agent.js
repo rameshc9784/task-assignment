@@ -6,6 +6,10 @@ const agentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  countryCode: {
+    type: String,
+    required: true
+  },
   mobile: {
     type: Number,
     required: true,
